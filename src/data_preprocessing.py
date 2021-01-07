@@ -42,12 +42,12 @@ def create_utility_matrix(df):
 
     diff_dates = lambda x: abs(x[3] - x[4])
 
-    df['InvoiceDate1'] = df['InvoiceDate'].apply(lambda x:x.date())
-    selected_df = df[['CustomerID', 'StockCode', 'InvoiceDate1']]
+    df['InvoiceDate'] = pd.to_datetime(df['InvoiceDate'])
+    selected_df = df[['CustomerID', 'StockCode', 'InvoiceDate']]
     aggr_data = pd.DataFrame(selected_df.groupby(['CustomerID', 'StockCode'])
-                             .agg({'StockCode': np.size, 'InvoiceDate1': np.max}))
+                             .agg({'StockCode': np.size, 'InvoiceDate': np.max}))
     del selected_df
-    aggr_data.rename(columns={'InvoiceDate1': 'max_cust_date',
+    aggr_data.rename(columns={'InvoiceDate': 'max_cust_date',
                               'StockCode': 'frequency'}, inplace=True)
     aggr_data = aggr_data.reset_index()
     max_dates_data = aggr_data[['CustomerID', 'max_cust_date']].\
